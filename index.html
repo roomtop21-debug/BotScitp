@@ -4,9 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>BinBonApp</title>
+    
+    <!-- PWA Meta Tags -->
+    <link rel="manifest" href="/BotScitp/manifest.json">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#FF6B00">
+    
     <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+    
     <style>
         :root {
             --bg: #000;
@@ -153,9 +162,7 @@
             -webkit-overflow-scrolling: touch; scrollbar-width: none;
         }
         .stories-container::-webkit-scrollbar { display: none; }
-        .stories-list {
-            display: flex; gap: 14px; padding: 0 16px;
-        }
+        .stories-list { display: flex; gap: 14px; padding: 0 16px; }
         .story-item {
             display: flex; flex-direction: column; align-items: center;
             gap: 5px; cursor: pointer; flex-shrink: 0; transition: 0.15s;
@@ -167,9 +174,7 @@
             display: flex; align-items: center; justify-content: center;
         }
         .story-ring.viewed { background: #333; }
-        .story-ring.add-story {
-            background: #222; border: 2px dashed #555; padding: 0;
-        }
+        .story-ring.add-story { background: #222; border: 2px dashed #555; padding: 0; }
         .story-avatar {
             width: 62px; height: 62px; border-radius: 50%; background: #1a1a1a;
             border: 2px solid #000; display: flex; align-items: center;
@@ -193,9 +198,7 @@
             width: 100%; height: 100%; display: flex; align-items: center;
             justify-content: center; position: relative;
         }
-        .story-viewer .story-content img {
-            max-width: 100%; max-height: 100%; object-fit: contain;
-        }
+        .story-viewer .story-content img { max-width: 100%; max-height: 100%; object-fit: contain; }
         .story-viewer .story-close {
             position: absolute; top: 20px; right: 20px; z-index: 10;
             background: rgba(0,0,0,0.6); border: none; color: #fff;
@@ -207,13 +210,11 @@
             align-items: center; gap: 8px; z-index: 10;
         }
         .story-viewer .story-user-info .story-user-avatar {
-            width: 36px; height: 36px; border-radius: 50%; overflow: hidden;
-            background: #222;
+            width: 36px; height: 36px; border-radius: 50%; overflow: hidden; background: #222;
         }
         .story-viewer .story-user-info .story-user-avatar img { width: 100%; height: 100%; object-fit: cover; }
         .story-viewer .story-user-info .story-user-name {
-            color: #fff; font-weight: 600; font-size: 14px;
-            text-shadow: 0 0 8px rgba(0,0,0,0.8);
+            color: #fff; font-weight: 600; font-size: 14px; text-shadow: 0 0 8px rgba(0,0,0,0.8);
         }
 
         /* FEED */
@@ -356,7 +357,7 @@
         .grid-post img { width: 100%; height: 100%; object-fit: cover; }
         .grid-post:active { opacity: 0.7; }
 
-        /* SEARCH & NOTIFICATIONS */
+        /* SEARCH */
         .search-box { padding: 12px 16px; flex-shrink: 0; }
         .search-box input {
             width: 100%; background: #111; border: 1px solid #333; color: #fff;
@@ -449,7 +450,6 @@
             border-top-color: var(--accent); border-radius: 50%;
             animation: spin 0.7s linear infinite; margin: 30px auto;
         }
-        @keyframes spin { to { transform: rotate(360deg); } }
         .empty-state {
             display: flex; flex-direction: column; align-items: center;
             justify-content: center; height: 100%; color: #666;
@@ -469,21 +469,27 @@
     </style>
 </head>
 <body>
+
+    <!-- SPLASH -->
     <div class="splash" id="splashScreen">
         <div class="splash-logo">BinBonApp</div>
         <div class="splash-loader"></div>
     </div>
+
+    <!-- STORY VIEWER -->
     <div class="story-viewer" id="storyViewer">
         <div class="story-content" id="storyContent"></div>
         <button class="story-close" id="storyClose">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
         </button>
         <div class="story-user-info" id="storyUserInfo"></div>
     </div>
 
     <div class="phone" id="app">
-        <div class="auth-screen hidden" id="authScreen">
+        <!-- AUTH SCREEN -->
+        <div class="auth-screen" id="authScreen">
             <div class="auth-logo">BinBonApp</div>
+            
             <div id="authStep1" style="width:100%;display:flex;flex-direction:column;align-items:center;gap:12px;">
                 <div class="auth-subtitle" id="authSubtitle">Войдите или создайте аккаунт</div>
                 <input type="text" class="auth-input" id="authUsername" placeholder="Юзернейм">
@@ -495,8 +501,9 @@
                 <button class="auth-btn" id="authBtn">Войти</button>
                 <span class="auth-toggle" id="authToggle">Нет аккаунта? Зарегистрироваться</span>
             </div>
+            
             <div id="authStep2" style="display:none;width:100%;text-align:center;">
-                <div class="auth-subtitle">Введите 6-значный код</div>
+                <div class="auth-subtitle">Введите 6-значный код подтверждения</div>
                 <div class="auth-success" id="codeSentMsg"></div>
                 <div class="code-inputs" id="codeInputs">
                     <input type="text" maxlength="1" inputmode="numeric" autocomplete="one-time-code">
@@ -511,26 +518,26 @@
                 <button class="auth-btn auth-btn-outline" id="resendCodeBtn" style="margin-top:6px;">🔄 Отправить снова</button>
                 <span class="auth-toggle" id="backToStep1" style="margin-top:8px;">← Назад</span>
             </div>
+            
             <div class="loading-spinner" id="authLoading" style="display:none;"></div>
         </div>
 
-        <div class="main-content hidden" id="mainContent">
+        <!-- MAIN CONTENT -->
+        <div class="main-content" id="mainContent" style="display:none;">
             <div class="header">
                 <span class="logo">BinBonApp</span>
                 <div class="header-actions">
                     <button id="btnNotifications" title="Уведомления">
-                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
                         <span class="notif-badge" id="notifBadge"></span>
                     </button>
                     <button id="btnLogout" title="Выйти">
-                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
                     </button>
                 </div>
             </div>
 
-            <div class="stories-container" id="storiesContainer">
-                <div class="stories-list" id="storiesList"></div>
-            </div>
+            <div class="stories-container"><div class="stories-list" id="storiesList"></div></div>
 
             <div class="add-form hidden" id="addForm">
                 <textarea id="inputCaption" placeholder="Напишите описание..."></textarea>
@@ -540,10 +547,7 @@
                         <br>Выбрать фото
                     </span>
                 </div>
-                <button class="btn" id="btnPublish">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="vertical-align:middle;margin-right:4px;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
-                    Опубликовать
-                </button>
+                <button class="btn" id="btnPublish">📸 Опубликовать</button>
             </div>
 
             <div class="add-form hidden" id="storyForm">
@@ -553,20 +557,15 @@
                         <br>Выбрать фото для истории
                     </span>
                 </div>
-                <button class="btn" id="btnPublishStory">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>
-                    Опубликовать историю
-                </button>
+                <button class="btn" id="btnPublishStory">📸 Опубликовать историю</button>
             </div>
 
             <div class="tab active" id="tab-feed"><div class="feed" id="feedContent"></div></div>
             <div class="tab" id="tab-search">
-                <div class="search-box"><input type="text" id="searchInput" placeholder="Поиск пользователей..."></div>
+                <div class="search-box"><input type="text" id="searchInput" placeholder="🔍 Поиск пользователей..."></div>
                 <div class="search-results" id="searchResults"></div>
             </div>
-            <div class="tab" id="tab-notifications">
-                <div class="notif-list" id="notifList"></div>
-            </div>
+            <div class="tab" id="tab-notifications"><div class="notif-list" id="notifList"></div></div>
             <div class="tab" id="tab-profile"><div class="profile-scroll" id="profileScroll"></div></div>
 
             <nav class="bottom-nav">
@@ -598,6 +597,7 @@
     </div>
 
     <script>
+        // ============ FIREBASE INIT ============
         firebase.initializeApp({
             apiKey: "AIzaSyAvH0fUwbexhaAEww9HboKd2oyZaMalZSA",
             authDomain: "binbonapp.firebaseapp.com",
@@ -610,45 +610,183 @@
         const auth = firebase.auth();
         const db = firebase.database();
 
+        // ============ DOM HELPERS ============
         const $ = s => document.querySelector(s);
         const $$ = s => document.querySelectorAll(s);
-        let currentUser = null, currentUserData = null, allPosts = [], allUsers = {}, allStories = [];
-        let notifications = [], currentTab = 'tab-feed', selectedPhotoFile = null, selectedStoryFile = null;
-        let isLoginMode = true, viewedProfileUserId = null, verificationCode = null, splashHidden = false;
+
+        // ============ GLOBAL STATE ============
+        let currentUser = null;
+        let currentUserData = null;
+        let allPosts = [];
+        let allUsers = {};
+        let allStories = [];
+        let notifications = [];
+        let currentTab = 'tab-feed';
+        let selectedPhotoFile = null;
+        let selectedStoryFile = null;
+        let isLoginMode = true;
+        let verificationCode = null;
+        let splashHidden = false;
         let viewedStories = JSON.parse(localStorage.getItem('bba_viewedStories') || '{}');
 
-        function toast(msg) { clearTimeout(window._tt); const t=$('#toast'); t.textContent=msg; t.classList.add('show'); window._tt=setTimeout(()=>t.classList.remove('show'),2200); }
-        function openModal(html) { $('#modalContent').innerHTML=html; const o=$('#modalOverlay'); o.classList.add('open'); o.onclick=e=>{if(e.target===o)closeModal();}; }
-        function closeModal() { $('#modalOverlay').classList.remove('open'); }
-        function pickFile() { return new Promise(r=>{ const i=document.createElement('input'); i.type='file'; i.accept='image/*'; i.onchange=e=>r(e.target.files[0]||null); i.click(); }); }
-        function fileToDataURL(file) { return new Promise(r=>{ const reader=new FileReader(); reader.onload=e=>r(e.target.result); reader.readAsDataURL(file); }); }
-        function hashCode(s) { let h=0; for(let i=0;i<s.length;i++) h=((h<<5)-h)+s.charCodeAt(i); return h; }
-        function timeAgo(iso) { if(!iso) return ''; const diff=Math.floor((Date.now()-new Date(iso))/1000); if(diff<30) return 'сейчас'; if(diff<60) return diff+'с'; if(diff<3600) return Math.floor(diff/60)+'м'; if(diff<86400) return Math.floor(diff/3600)+'ч'; return new Date(iso).toLocaleDateString('ru',{day:'numeric',month:'short'}); }
+        // ============ UTILS ============
+        function toast(msg) { 
+            clearTimeout(window._tt); 
+            const t = $('#toast'); 
+            t.textContent = msg; 
+            t.classList.add('show'); 
+            window._tt = setTimeout(() => t.classList.remove('show'), 2200); 
+        }
+        
+        function openModal(html) { 
+            $('#modalContent').innerHTML = html; 
+            const overlay = $('#modalOverlay'); 
+            overlay.classList.add('open'); 
+            overlay.onclick = e => { if (e.target === overlay) closeModal(); }; 
+        }
+        
+        function closeModal() { 
+            $('#modalOverlay').classList.remove('open'); 
+        }
+        
+        function pickFile() { 
+            return new Promise(r => { 
+                const inp = document.createElement('input'); 
+                inp.type = 'file'; 
+                inp.accept = 'image/*'; 
+                inp.onchange = e => r(e.target.files[0] || null); 
+                inp.click(); 
+            }); 
+        }
+        
+        function fileToDataURL(file) { 
+            return new Promise(r => { 
+                const reader = new FileReader(); 
+                reader.onload = e => r(e.target.result); 
+                reader.readAsDataURL(file); 
+            }); 
+        }
+        
+        function hashCode(s) { 
+            let h = 0; 
+            for (let i = 0; i < s.length; i++) h = ((h << 5) - h) + s.charCodeAt(i); 
+            return h; 
+        }
+        
+        function timeAgo(iso) { 
+            if (!iso) return ''; 
+            const diff = Math.floor((Date.now() - new Date(iso)) / 1000); 
+            if (diff < 30) return 'сейчас'; 
+            if (diff < 60) return diff + 'с'; 
+            if (diff < 3600) return Math.floor(diff / 60) + 'м'; 
+            if (diff < 86400) return Math.floor(diff / 3600) + 'ч'; 
+            return new Date(iso).toLocaleDateString('ru', { day: 'numeric', month: 'short' }); 
+        }
 
         function userAvatar(data) {
-            if (data?.photoURL && (data.photoURL.startsWith('data:') || data.photoURL.startsWith('http'))) return `<img src="${data.photoURL}" alt="">`;
-            const colors=['#FF6B00','#FF2D55','#FFB800','#4ecdc4','#9b59b6','#FF8533','#2ecc71'];
-            const name=data?.name||data?.username||'U'; const c=colors[Math.abs(hashCode(name))%colors.length];
+            if (data?.photoURL && data.photoURL.startsWith('data:')) return `<img src="${data.photoURL}" alt="">`;
+            if (data?.photoURL && data.photoURL.startsWith('http')) return `<img src="${data.photoURL}" alt="">`;
+            const colors = ['#FF6B00','#FF2D55','#FFB800','#4ecdc4','#9b59b6'];
+            const name = data?.name || data?.username || 'U';
+            const c = colors[Math.abs(hashCode(name)) % colors.length];
             return `<svg viewBox="0 0 60 60"><circle cx="30" cy="22" r="14" fill="${c}"/><ellipse cx="30" cy="58" rx="20" ry="14" fill="${c}" opacity="0.7"/></svg>`;
         }
 
-        const SVG = {
-            heart: (filled) => filled ?
-                `<svg width="26" height="26" viewBox="0 0 24 24" fill="#FF2D55"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>` :
-                `<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>`,
-            comment: `<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>`,
-            share: `<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>`,
-            heartAnim: `<svg width="80" height="80" viewBox="0 0 24 24" fill="#FF2D55"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>`,
-            plusCircle: `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FF6B00" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>`,
-        };
+        function hideSplash() { 
+            if (!splashHidden) { 
+                $('#splashScreen').classList.add('hidden'); 
+                setTimeout(() => {
+                    const splash = $('#splashScreen');
+                    if (splash) splash.remove();
+                }, 600); 
+                splashHidden = true; 
+            } 
+        }
 
-        function hideSplash() { if(!splashHidden){ $('#splashScreen').classList.add('hidden'); setTimeout(()=>$('#splashScreen').remove(),600); splashHidden=true; } }
+        // ============ AUTH ============
+        function updateAuthUI() {
+            $('#authUsername').style.display = isLoginMode ? 'none' : 'block';
+            $('#authName').style.display = isLoginMode ? 'none' : 'block';
+            $('#authBtn').textContent = isLoginMode ? 'Войти' : 'Зарегистрироваться';
+            $('#authSubtitle').textContent = isLoginMode ? 'Войдите в аккаунт' : 'Создайте аккаунт';
+            $('#authToggle').textContent = isLoginMode ? 'Нет аккаунта? Зарегистрироваться' : 'Уже есть аккаунт? Войти';
+        }
+
+        function setupCodeInputs() {
+            const inputs = $$('#codeInputs input');
+            inputs.forEach((inp, i) => {
+                inp.addEventListener('input', function() {
+                    this.value = this.value.replace(/[^0-9]/g, '').slice(0, 1);
+                    if (this.value && i < 5) inputs[i + 1].focus();
+                });
+                inp.addEventListener('keydown', function(e) {
+                    if (e.key === 'Backspace' && !this.value && i > 0) inputs[i - 1].focus();
+                });
+                inp.addEventListener('paste', function(e) {
+                    e.preventDefault();
+                    const pasted = (e.clipboardData.getData('text') || '').replace(/[^0-9]/g, '').slice(0, 6);
+                    pasted.split('').forEach((ch, idx) => { if (inputs[idx]) inputs[idx].value = ch; });
+                    if (inputs[Math.min(pasted.length, 5)]) inputs[Math.min(pasted.length, 5)].focus();
+                });
+            });
+        }
+
+        function getCodeValue() { 
+            let c = ''; 
+            $$('#codeInputs input').forEach(i => c += i.value); 
+            return c; 
+        }
+
+        // ============ LOAD DATA ============
+        async function loadUsers() { 
+            const snap = await db.ref('users').once('value'); 
+            allUsers = snap.exists() ? snap.val() : {}; 
+        }
+        
+        async function loadPosts() { 
+            const snap = await db.ref('posts').once('value'); 
+            allPosts = []; 
+            if (snap.exists()) { 
+                const data = snap.val(); 
+                allPosts = Object.entries(data)
+                    .map(([id, p]) => ({ id, ...p }))
+                    .sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0)); 
+            } 
+        }
+        
+        async function loadNotifications() { 
+            if (!currentUser) return; 
+            const snap = await db.ref('notifications/' + currentUser.uid).once('value'); 
+            notifications = []; 
+            if (snap.exists()) { 
+                const data = snap.val(); 
+                notifications = Object.entries(data)
+                    .map(([id, n]) => ({ id, ...n }))
+                    .sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0)); 
+            } 
+            updateNotifBadge(); 
+        }
+        
+        function updateNotifBadge() { 
+            const unread = notifications.filter(n => !n.read).length; 
+            const badge = $('#notifBadge'); 
+            if (badge) {
+                if (unread > 0) { 
+                    badge.classList.add('show'); 
+                    badge.textContent = unread; 
+                } else { 
+                    badge.classList.remove('show'); 
+                } 
+            }
+        }
 
         // ============ STORIES ============
         async function loadStories() {
+            if (!currentUser) return;
             const followingSnap = await db.ref('following/' + currentUser.uid).once('value');
             const followingIds = followingSnap.exists() ? Object.keys(followingSnap.val()) : [];
-            followingIds.push(currentUser.uid);
+            if (!followingIds.includes(currentUser.uid)) followingIds.push(currentUser.uid);
+            
             allStories = [];
             for (const uid of followingIds) {
                 const snap = await db.ref('stories/' + uid).once('value');
@@ -661,19 +799,20 @@
                     }
                 }
             }
-            allStories.sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt));
+            allStories.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
             renderStories();
         }
 
         function renderStories() {
             const container = $('#storiesList');
+            if (!container) return;
+            
             const userStoriesMap = {};
             allStories.forEach(s => {
                 if (!userStoriesMap[s.userId]) userStoriesMap[s.userId] = [];
                 userStoriesMap[s.userId].push(s);
             });
 
-            // My story button
             let html = `
                 <div class="story-item" id="myStoryAdd">
                     <div class="story-ring add-story">
@@ -683,7 +822,7 @@
                 </div>`;
 
             for (const [uid, stories] of Object.entries(userStoriesMap)) {
-                if (uid === currentUser.uid) continue;
+                if (uid === currentUser?.uid) continue;
                 const userData = allUsers[uid] || {};
                 const hasUnviewed = stories.some(s => !viewedStories[s.id]);
                 html += `
@@ -696,16 +835,20 @@
             }
             container.innerHTML = html;
 
-            $('#myStoryAdd').onclick = () => {
-                $('#storyForm').classList.toggle('hidden');
-                $('#addForm').classList.add('hidden');
+            const myBtn = $('#myStoryAdd');
+            if (myBtn) myBtn.onclick = () => {
+                const form = $('#storyForm');
+                if (form) form.classList.toggle('hidden');
+                const addForm = $('#addForm');
+                if (addForm) addForm.classList.add('hidden');
             };
+
             $$('.story-item[data-user-id]').forEach(el => {
                 el.onclick = () => showStory(el.dataset.userId);
             });
         }
 
-        async function showStory(userId) {
+        function showStory(userId) {
             const userStories = allStories.filter(s => s.userId === userId);
             if (!userStories.length) return;
             const story = userStories[0];
@@ -714,293 +857,786 @@
             renderStories();
 
             const userData = allUsers[userId] || {};
-            $('#storyUserInfo').innerHTML = `
+            const infoEl = $('#storyUserInfo');
+            if (infoEl) infoEl.innerHTML = `
                 <div class="story-user-avatar">${userAvatar(userData)}</div>
                 <span class="story-user-name">${userData.username || 'user'}</span>`;
-            $('#storyContent').innerHTML = `<img src="${story.imageURL}">`;
-            $('#storyViewer').classList.add('open');
+            
+            const contentEl = $('#storyContent');
+            if (contentEl) contentEl.innerHTML = `<img src="${story.imageURL}">`;
+            
+            const viewer = $('#storyViewer');
+            if (viewer) viewer.classList.add('open');
 
             setTimeout(() => {
-                $('#storyViewer').classList.remove('open');
+                if (viewer) viewer.classList.remove('open');
                 loadStories();
             }, 5000);
         }
 
-        async function createStory() {
-            if (!currentUser) return toast('Войдите');
-            if (!selectedStoryFile) return toast('Выберите фото');
-            const btn = $('#btnPublishStory'); btn.disabled = true;
-            try {
-                const imageURL = await fileToDataURL(selectedStoryFile);
-                const ref = db.ref('stories/' + currentUser.uid).push();
-                await ref.set({ imageURL, createdAt: new Date().toISOString() });
-                selectedStoryFile = null;
-                $('#storyUploadArea').innerHTML = '<span class="placeholder"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg><br>Выбрать фото для истории</span>';
-                $('#storyForm').classList.add('hidden');
-                await loadStories();
-                toast('История опубликована!');
-            } catch(e) { toast('Ошибка'); }
-            btn.disabled = false;
+        // ============ MAIN APP ============
+        function switchToMainApp() {
+            console.log('🔄 Переключаем на главный экран');
+            const authScreen = $('#authScreen');
+            const mainContent = $('#mainContent');
+            
+            if (authScreen) authScreen.style.display = 'none';
+            if (mainContent) {
+                mainContent.style.display = 'flex';
+                mainContent.classList.remove('hidden');
+            }
+            
+            // Загружаем данные
+            loadPosts().then(() => renderFeed());
+            updateProfileTab();
+            loadNotifications();
+            loadStories();
+            hideSplash();
         }
 
-        // ============ AUTH ============
-        function updateAuthUI() {
-            $('#authUsername').style.display=isLoginMode?'none':'block';
-            $('#authName').style.display=isLoginMode?'none':'block';
-            $('#authBtn').textContent=isLoginMode?'Войти':'Зарегистрироваться';
-            $('#authSubtitle').textContent=isLoginMode?'Войдите в аккаунт':'Создайте аккаунт';
-            $('#authToggle').textContent=isLoginMode?'Нет аккаунта? Зарегистрироваться':'Уже есть аккаунт? Войти';
+        function switchToAuth() {
+            console.log('🔄 Переключаем на экран авторизации');
+            const authScreen = $('#authScreen');
+            const mainContent = $('#mainContent');
+            const step1 = $('#authStep1');
+            const step2 = $('#authStep2');
+            
+            if (mainContent) {
+                mainContent.style.display = 'none';
+                mainContent.classList.add('hidden');
+            }
+            if (authScreen) {
+                authScreen.style.display = 'flex';
+                authScreen.classList.remove('hidden');
+            }
+            if (step1) step1.style.display = 'flex';
+            if (step2) step2.style.display = 'none';
+            
+            allPosts = [];
+            hideSplash();
         }
-        function setupCodeInputs() {
-            const inputs=$$('#codeInputs input');
-            inputs.forEach((inp,i)=>{
-                inp.addEventListener('input',function(){this.value=this.value.replace(/[^0-9]/g,'').slice(0,1); if(this.value&&i<5) inputs[i+1].focus();});
-                inp.addEventListener('keydown',function(e){if(e.key==='Backspace'&&!this.value&&i>0) inputs[i-1].focus();});
-                inp.addEventListener('paste',function(e){e.preventDefault(); const p=(e.clipboardData.getData('text')||'').replace(/[^0-9]/g,'').slice(0,6); p.split('').forEach((ch,idx)=>{if(inputs[idx])inputs[idx].value=ch;}); if(inputs[Math.min(p.length,5)])inputs[Math.min(p.length,5)].focus();});
-            });
-        }
-        function getCodeValue(){let c='';$$('#codeInputs input').forEach(i=>c+=i.value);return c;}
 
-        function setupAuth(){
-            updateAuthUI();setupCodeInputs();
-            $('#authToggle').onclick=()=>{isLoginMode=!isLoginMode;updateAuthUI();$('#authError').textContent='';};
-            $('#backToStep1').onclick=()=>{$('#authStep1').style.display='flex';$('#authStep2').style.display='none';};
-            $('#authBtn').onclick=async()=>{
-                const email=$('#authEmail').value.trim(),pass=$('#authPassword').value.trim();
-                const uname=$('#authUsername').value.trim().toLowerCase(),name=$('#authName').value.trim();
-                const err=$('#authError');err.textContent='';
-                if(!email||!pass){err.textContent='Заполните все поля';return;}
-                if(pass.length<6){err.textContent='Пароль минимум 6 символов';return;}
-                if(!isLoginMode){
-                    if(!uname||!name){err.textContent='Заполните юзернейм и имя';return;}
-                    if(!/^[a-zA-Z0-9_]+$/.test(uname)){err.textContent='Юзернейм: только буквы, цифры и _';return;}
-                    const snap=await db.ref('users').orderByChild('username').equalTo(uname).once('value');
-                    if(snap.exists()){err.textContent='Юзернейм уже занят';return;}
+        function init() {
+            console.log('🚀 BinBonApp инициализация...');
+            
+            // Splash показываем сразу
+            const splash = $('#splashScreen');
+            if (splash) splash.style.display = 'flex';
+            
+            // Auth screen скрываем
+            const authScreen = $('#authScreen');
+            if (authScreen) authScreen.style.display = 'none';
+            
+            // Main content скрываем
+            const mainContent = $('#mainContent');
+            if (mainContent) mainContent.style.display = 'none';
+            
+            // Настраиваем интерфейс авторизации
+            updateAuthUI();
+            setupCodeInputs();
+            
+            // Кнопка переключения режима
+            const authToggle = $('#authToggle');
+            if (authToggle) authToggle.onclick = () => {
+                isLoginMode = !isLoginMode;
+                updateAuthUI();
+                const err = $('#authError');
+                if (err) err.textContent = '';
+            };
+            
+            // Кнопка назад
+            const backBtn = $('#backToStep1');
+            if (backBtn) backBtn.onclick = () => {
+                const step1 = $('#authStep1');
+                const step2 = $('#authStep2');
+                if (step1) step1.style.display = 'flex';
+                if (step2) step2.style.display = 'none';
+            };
+            
+            // Кнопка входа/регистрации
+            const authBtn = $('#authBtn');
+            if (authBtn) authBtn.onclick = async () => {
+                const email = $('#authEmail')?.value?.trim() || '';
+                const pass = $('#authPassword')?.value?.trim() || '';
+                const uname = $('#authUsername')?.value?.trim().toLowerCase() || '';
+                const name = $('#authName')?.value?.trim() || '';
+                const err = $('#authError');
+                
+                if (err) err.textContent = '';
+                
+                if (!email || !pass) {
+                    if (err) err.textContent = 'Заполните все поля';
+                    return;
                 }
-                $('#authLoading').style.display='block';$('#authBtn').disabled=true;
-                try{
-                    if(isLoginMode){await auth.signInWithEmailAndPassword(email,pass);}
-                    else{
-                        const cred=await auth.createUserWithEmailAndPassword(email,pass);
-                        await cred.user.updateProfile({displayName:name});
-                        await db.ref('users/'+cred.user.uid).set({username:uname,name,email,photoURL:null,bio:'',createdAt:new Date().toISOString()});
+                if (pass.length < 6) {
+                    if (err) err.textContent = 'Пароль минимум 6 символов';
+                    return;
+                }
+                if (!isLoginMode) {
+                    if (!uname || !name) {
+                        if (err) err.textContent = 'Заполните юзернейм и имя';
+                        return;
                     }
-                    verificationCode=Math.floor(100000+Math.random()*900000).toString();
-                    await db.ref('verificationCodes/'+auth.currentUser.uid).set({code:verificationCode,createdAt:Date.now()});
-                    $('#codeSentMsg').textContent='Код отправлен на '+email+' (тест: '+verificationCode+')';
-                    $('#authStep1').style.display='none';$('#authStep2').style.display='block';
-                }catch(e){
-                    let msg=e.message;
-                    if(e.code==='auth/email-already-in-use')msg='Email уже используется';
-                    else if(e.code==='auth/invalid-email')msg='Неверный email';
-                    else if(e.code==='auth/user-not-found')msg='Пользователь не найден';
-                    else if(e.code==='auth/wrong-password')msg='Неверный пароль';
-                    err.textContent=msg;
-                }finally{$('#authLoading').style.display='none';$('#authBtn').disabled=false;}
+                    if (!/^[a-zA-Z0-9_]+$/.test(uname)) {
+                        if (err) err.textContent = 'Юзернейм: только буквы, цифры и _';
+                        return;
+                    }
+                    // Проверка юзернейма
+                    const snap = await db.ref('users').orderByChild('username').equalTo(uname).once('value');
+                    if (snap.exists()) {
+                        if (err) err.textContent = 'Юзернейм уже занят';
+                        return;
+                    }
+                }
+                
+                const loading = $('#authLoading');
+                if (loading) loading.style.display = 'block';
+                if (authBtn) authBtn.disabled = true;
+                
+                try {
+                    if (isLoginMode) {
+                        await auth.signInWithEmailAndPassword(email, pass);
+                    } else {
+                        const cred = await auth.createUserWithEmailAndPassword(email, pass);
+                        await cred.user.updateProfile({ displayName: name });
+                        await db.ref('users/' + cred.user.uid).set({
+                            username: uname,
+                            name,
+                            email,
+                            photoURL: null,
+                            bio: '',
+                            createdAt: new Date().toISOString()
+                        });
+                    }
+                    
+                    // Генерируем код подтверждения
+                    verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
+                    const user = auth.currentUser;
+                    if (user) {
+                        await db.ref('verificationCodes/' + user.uid).set({
+                            code: verificationCode,
+                            createdAt: Date.now()
+                        });
+                    }
+                    
+                    const msg = $('#codeSentMsg');
+                    if (msg) msg.textContent = 'Код подтверждения: ' + verificationCode;
+                    
+                    const step1 = $('#authStep1');
+                    const step2 = $('#authStep2');
+                    if (step1) step1.style.display = 'none';
+                    if (step2) step2.style.display = 'block';
+                    
+                } catch (e) {
+                    console.error('Auth error:', e);
+                    let msg = e.message;
+                    if (e.code === 'auth/email-already-in-use') msg = 'Email уже используется';
+                    else if (e.code === 'auth/invalid-email') msg = 'Неверный email';
+                    else if (e.code === 'auth/user-not-found') msg = 'Пользователь не найден';
+                    else if (e.code === 'auth/wrong-password') msg = 'Неверный пароль';
+                    if (err) err.textContent = msg;
+                } finally {
+                    if (loading) loading.style.display = 'none';
+                    if (authBtn) authBtn.disabled = false;
+                }
             };
-            $('#verifyCodeBtn').onclick=async()=>{
-                const code=getCodeValue(),err=$('#codeError');err.textContent='';
-                if(code.length!==6){err.textContent='Введите 6 цифр';return;}
-                const snap=await db.ref('verificationCodes/'+auth.currentUser.uid).once('value');
-                if(!snap.exists()){err.textContent='Код не найден';return;}
-                if(snap.val().code!==code){err.textContent='Неверный код';return;}
-                await db.ref('verificationCodes/'+auth.currentUser.uid).remove();
-                toast('Подтверждено!');
+            
+            // Кнопка подтверждения кода
+            const verifyBtn = $('#verifyCodeBtn');
+            if (verifyBtn) verifyBtn.onclick = async () => {
+                const code = getCodeValue();
+                const err = $('#codeError');
+                if (err) err.textContent = '';
+                
+                if (code.length !== 6) {
+                    if (err) err.textContent = 'Введите 6 цифр';
+                    return;
+                }
+                
+                const user = auth.currentUser;
+                if (!user) {
+                    if (err) err.textContent = 'Пользователь не найден';
+                    return;
+                }
+                
+                try {
+                    const snap = await db.ref('verificationCodes/' + user.uid).once('value');
+                    if (!snap.exists()) {
+                        if (err) err.textContent = 'Код не найден';
+                        return;
+                    }
+                    
+                    const data = snap.val();
+                    if (data.code !== code) {
+                        if (err) err.textContent = 'Неверный код';
+                        return;
+                    }
+                    
+                    // Удаляем код из базы
+                    await db.ref('verificationCodes/' + user.uid).remove();
+                    
+                    // ПОКАЗЫВАЕМ ГЛАВНЫЙ ЭКРАН
+                    console.log('✅ Код верный, переключаем на главный экран');
+                    switchToMainApp();
+                    
+                } catch (e) {
+                    console.error('Verification error:', e);
+                    if (err) err.textContent = 'Ошибка: ' + e.message;
+                }
             };
-            $('#resendCodeBtn').onclick=async()=>{
-                verificationCode=Math.floor(100000+Math.random()*900000).toString();
-                await db.ref('verificationCodes/'+auth.currentUser.uid).set({code:verificationCode,createdAt:Date.now()});
-                $('#codeSentMsg').textContent='Новый код: '+verificationCode;
+            
+            // Кнопка повторной отправки кода
+            const resendBtn = $('#resendCodeBtn');
+            if (resendBtn) resendBtn.onclick = async () => {
+                const user = auth.currentUser;
+                if (!user) return;
+                verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
+                await db.ref('verificationCodes/' + user.uid).set({
+                    code: verificationCode,
+                    createdAt: Date.now()
+                });
+                const msg = $('#codeSentMsg');
+                if (msg) msg.textContent = 'Новый код: ' + verificationCode;
             };
+            
+            // Отслеживание авторизации
+            auth.onAuthStateChanged(async (user) => {
+                console.log('👤 Auth state changed:', user ? 'Вошёл' : 'Вышел');
+                currentUser = user;
+                
+                if (user) {
+                    await loadUsers();
+                    currentUserData = allUsers[user.uid] || {};
+                    
+                    // Проверяем код подтверждения
+                    const codeSnap = await db.ref('verificationCodes/' + user.uid).once('value');
+                    
+                    if (codeSnap.exists()) {
+                        // Нужно подтверждение
+                        console.log('📧 Требуется код подтверждения');
+                        const authScreen = $('#authScreen');
+                        const mainContent = $('#mainContent');
+                        const step1 = $('#authStep1');
+                        const step2 = $('#authStep2');
+                        
+                        if (authScreen) {
+                            authScreen.style.display = 'flex';
+                            authScreen.classList.remove('hidden');
+                        }
+                        if (mainContent) {
+                            mainContent.style.display = 'none';
+                            mainContent.classList.add('hidden');
+                        }
+                        if (step1) step1.style.display = 'none';
+                        if (step2) step2.style.display = 'block';
+                        
+                        const msg = $('#codeSentMsg');
+                        if (msg) msg.textContent = 'Введите код подтверждения';
+                        
+                    } else {
+                        // Уже подтверждён
+                        console.log('✅ Пользователь подтверждён');
+                        switchToMainApp();
+                    }
+                } else {
+                    switchToAuth();
+                }
+                
+                hideSplash();
+            });
+            
+            // Кнопка выхода
+            const logoutBtn = $('#btnLogout');
+            if (logoutBtn) logoutBtn.onclick = async () => {
+                await auth.signOut();
+                toast('До встречи!');
+            };
+            
+            // Кнопка добавления поста
+            const addPostBtn = $('#btnAddPost');
+            if (addPostBtn) addPostBtn.onclick = () => {
+                if (!currentUser) return toast('Войдите');
+                const addForm = $('#addForm');
+                const storyForm = $('#storyForm');
+                if (addForm) addForm.classList.toggle('hidden');
+                if (storyForm) storyForm.classList.add('hidden');
+            };
+            
+            // Загрузка фото для поста
+            const photoArea = $('#photoUploadArea');
+            if (photoArea) photoArea.onclick = async () => {
+                const file = await pickFile();
+                if (!file) return;
+                selectedPhotoFile = file;
+                const url = await fileToDataURL(file);
+                if (photoArea) photoArea.innerHTML = `<img src="${url}"><span class="placeholder">Изменить фото</span>`;
+            };
+            
+            // Публикация поста
+            const publishBtn = $('#btnPublish');
+            if (publishBtn) publishBtn.onclick = async () => {
+                if (!currentUser) return toast('Войдите');
+                if (!selectedPhotoFile) return toast('Выберите фото');
+                
+                if (publishBtn) publishBtn.disabled = true;
+                
+                try {
+                    const imageURL = await fileToDataURL(selectedPhotoFile);
+                    const ref = db.ref('posts').push();
+                    await ref.set({
+                        userId: currentUser.uid,
+                        username: currentUserData?.username || 'user',
+                        userName: currentUserData?.name || 'User',
+                        imageURL,
+                        caption: $('#inputCaption')?.value?.trim() || '',
+                        likes: {},
+                        comments: {},
+                        views: 0,
+                        createdAt: new Date().toISOString()
+                    });
+                    
+                    const captionInput = $('#inputCaption');
+                    if (captionInput) captionInput.value = '';
+                    selectedPhotoFile = null;
+                    
+                    if (photoArea) photoArea.innerHTML = '<span class="placeholder"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg><br>Выбрать фото</span>';
+                    
+                    const addForm = $('#addForm');
+                    if (addForm) addForm.classList.add('hidden');
+                    
+                    await loadPosts();
+                    renderFeed();
+                    updateProfileTab();
+                    toast('Опубликовано!');
+                } catch (e) {
+                    toast('Ошибка');
+                }
+                
+                if (publishBtn) publishBtn.disabled = false;
+            };
+            
+            // Загрузка фото для истории
+            const storyArea = $('#storyUploadArea');
+            if (storyArea) storyArea.onclick = async () => {
+                const file = await pickFile();
+                if (!file) return;
+                selectedStoryFile = file;
+                const url = await fileToDataURL(file);
+                if (storyArea) storyArea.innerHTML = `<img src="${url}"><span class="placeholder">Изменить фото</span>`;
+            };
+            
+            // Публикация истории
+            const publishStoryBtn = $('#btnPublishStory');
+            if (publishStoryBtn) publishStoryBtn.onclick = async () => {
+                if (!currentUser) return toast('Войдите');
+                if (!selectedStoryFile) return toast('Выберите фото');
+                
+                if (publishStoryBtn) publishStoryBtn.disabled = true;
+                
+                try {
+                    const imageURL = await fileToDataURL(selectedStoryFile);
+                    const ref = db.ref('stories/' + currentUser.uid).push();
+                    await ref.set({ imageURL, createdAt: new Date().toISOString() });
+                    
+                    selectedStoryFile = null;
+                    if (storyArea) storyArea.innerHTML = '<span class="placeholder"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg><br>Выбрать фото для истории</span>';
+                    
+                    const storyForm = $('#storyForm');
+                    if (storyForm) storyForm.classList.add('hidden');
+                    
+                    await loadStories();
+                    toast('История опубликована!');
+                } catch (e) {
+                    toast('Ошибка');
+                }
+                
+                if (publishStoryBtn) publishStoryBtn.disabled = false;
+            };
+            
+            // Закрытие истории
+            const storyCloseBtn = $('#storyClose');
+            if (storyCloseBtn) storyCloseBtn.onclick = () => {
+                const viewer = $('#storyViewer');
+                if (viewer) viewer.classList.remove('open');
+            };
+            
+            // Уведомления
+            const notifBtn = $('#btnNotifications');
+            if (notifBtn) notifBtn.onclick = () => switchTab('tab-notifications');
+            
+            // Навигация
+            $$('.nav-btn[data-tab]').forEach(b => {
+                b.onclick = function() {
+                    switchTab(this.dataset.tab);
+                };
+            });
+            
+            // Закрытие модалок по Escape
+            document.addEventListener('keydown', e => {
+                if (e.key === 'Escape') {
+                    closeModal();
+                    const viewer = $('#storyViewer');
+                    if (viewer) viewer.classList.remove('open');
+                }
+            });
+            
+            // Поиск
+            const searchInput = $('#searchInput');
+            if (searchInput) {
+                searchInput.addEventListener('input', async function() {
+                    const q = this.value.trim().toLowerCase();
+                    const res = $('#searchResults');
+                    if (!res) return;
+                    
+                    if (!q) {
+                        res.innerHTML = '<div style="color:#666;text-align:center;padding:20px;">Введите юзернейм</div>';
+                        return;
+                    }
+                    
+                    const found = Object.entries(allUsers).filter(([uid, data]) => 
+                        (data.username || '').toLowerCase().includes(q) && uid !== currentUser?.uid
+                    );
+                    
+                    if (!found.length) {
+                        res.innerHTML = '<div style="color:#666;text-align:center;padding:20px;">Ничего не найдено</div>';
+                        return;
+                    }
+                    
+                    res.innerHTML = found.map(([uid, data]) => `
+                        <div class="follower-row search-user" data-uid="${uid}" style="cursor:pointer;">
+                            <div class="flw-avatar">${userAvatar(data)}</div>
+                            <div><b>@${data.username || 'user'}</b><br><span style="font-size:11px;color:#888;">${data.name || ''}</span></div>
+                        </div>
+                    `).join('');
+                    
+                    $$('.search-user').forEach(el => {
+                        el.onclick = () => {
+                            switchTab('tab-profile');
+                            setTimeout(() => updateProfileTab(el.dataset.uid), 100);
+                        };
+                    });
+                });
+            }
+            
+            console.log('✅ BinBonApp инициализирован');
         }
 
-        async function loadUsers(){const s=await db.ref('users').once('value');allUsers=s.exists()?s.val():{};}
-        async function loadPosts(){const s=await db.ref('posts').once('value');allPosts=[];if(s.exists()){const d=s.val();allPosts=Object.entries(d).map(([id,p])=>({id,...p})).sort((a,b)=>new Date(b.createdAt||0)-new Date(a.createdAt||0));}}
-        async function loadNotifications(){if(!currentUser)return;const s=await db.ref('notifications/'+currentUser.uid).once('value');notifications=[];if(s.exists()){const d=s.val();notifications=Object.entries(d).map(([id,n])=>({id,...n})).sort((a,b)=>new Date(b.createdAt||0)-new Date(a.createdAt||0));}updateNotifBadge();}
-        function updateNotifBadge(){const unread=notifications.filter(n=>!n.read).length;const b=$('#notifBadge');if(unread>0){b.classList.add('show');b.textContent=unread;}else b.classList.remove('show');}
-        async function addNotification(to,type,fromUid,fromName,postId=null,commentText=null){const r=db.ref('notifications/'+to).push();await r.set({type,fromUserId:fromUid,fromName,postId,commentText,createdAt:new Date().toISOString(),read:false});}
-        async function markNotificationsRead(){if(!currentUser)return;const s=await db.ref('notifications/'+currentUser.uid).once('value');if(!s.exists())return;const u={};s.forEach(c=>{if(!c.val().read)u[c.key+'/read']=true;});if(Object.keys(u).length)await db.ref('notifications/'+currentUser.uid).update(u);}
-        async function followUser(t){if(!currentUser||currentUser.uid===t)return;await db.ref('followers/'+t+'/'+currentUser.uid).set(true);await db.ref('following/'+currentUser.uid+'/'+t).set(true);await addNotification(t,'follow',currentUser.uid,currentUserData?.username||'user');}
-        async function unfollowUser(t){await db.ref('followers/'+t+'/'+currentUser.uid).remove();await db.ref('following/'+currentUser.uid+'/'+t).remove();}
-        async function isFollowing(t){if(!currentUser)return false;const s=await db.ref('following/'+currentUser.uid+'/'+t).once('value');return s.exists();}
+        function switchTab(tabId) {
+            $$('.tab').forEach(t => t.classList.remove('active'));
+            const tab = document.getElementById(tabId);
+            if (tab) tab.classList.add('active');
+            
+            $$('.nav-btn').forEach(b => b.classList.remove('active'));
+            const nb = document.querySelector(`.nav-btn[data-tab="${tabId}"]`);
+            if (nb) nb.classList.add('active');
+            
+            const addForm = $('#addForm');
+            const storyForm = $('#storyForm');
+            if (addForm) addForm.classList.add('hidden');
+            if (storyForm) storyForm.classList.add('hidden');
+            
+            currentTab = tabId;
+            
+            if (tabId === 'tab-profile') updateProfileTab();
+            if (tabId === 'tab-notifications') {
+                loadNotifications().then(() => renderNotifications());
+            }
+        }
 
-        function renderFeed(){
-            const f=$('#feedContent');
-            if(!allPosts.length){f.innerHTML='<div class="empty-state"><svg width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg><span>Пока нет постов</span></div>';return;}
-            f.innerHTML=allPosts.map(p=>{
-                const likes=p.likes||{},la=Object.values(likes),liked=currentUser&&la.includes(currentUser.uid);
-                const comments=p.comments||{},ca=Object.values(comments);
-                const u=allUsers[p.userId]||{};
+        function renderFeed() {
+            const feed = $('#feedContent');
+            if (!feed) return;
+            
+            if (!allPosts.length) {
+                feed.innerHTML = '<div class="empty-state"><svg width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg><span>Пока нет постов</span></div>';
+                return;
+            }
+            
+            feed.innerHTML = allPosts.map(p => {
+                const likes = p.likes || {};
+                const la = Object.values(likes);
+                const liked = currentUser && la.includes(currentUser.uid);
+                const comments = p.comments || {};
+                const ca = Object.values(comments);
+                const u = allUsers[p.userId] || {};
+                
                 return `<article class="post" data-id="${p.id}">
                     <div class="post-header">
                         <div class="post-avatar" data-user-id="${p.userId}">${userAvatar(u)}</div>
-                        <span class="post-user" data-user-id="${p.userId}">${p.username||p.userName||'user'}</span>
+                        <span class="post-user" data-user-id="${p.userId}">${p.username || p.userName || 'user'}</span>
                         <span class="post-time">${timeAgo(p.createdAt)}</span>
                     </div>
                     <div class="post-img" data-id="${p.id}"><img src="${p.imageURL}" loading="lazy"></div>
                     <div class="post-actions">
-                        <button class="like-btn" data-id="${p.id}">${SVG.heart(liked)} <span class="count">${la.length}</span></button>
-                        <button class="cmt-btn" data-id="${p.id}">${SVG.comment} <span class="count">${ca.length}</span></button>
-                        <button class="share-btn" data-id="${p.id}">${SVG.share}</button>
+                        <button class="like-btn" data-id="${p.id}">
+                            <svg width="26" height="26" viewBox="0 0 24 24" fill="${liked ? '#FF2D55' : 'none'}" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                            <span class="count">${la.length}</span>
+                        </button>
+                        <button class="cmt-btn" data-id="${p.id}">
+                            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                            <span class="count">${ca.length}</span>
+                        </button>
+                        <button class="share-btn" data-id="${p.id}">
+                            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/></svg>
+                        </button>
                     </div>
                     <div class="post-likes">${la.length} отметок "Нравится"</div>
-                    ${p.caption?`<div class="post-caption"><b>${p.username||p.userName||'user'}</b> ${p.caption}</div>`:''}
-                    <div class="post-views">${p.views||0} просмотров</div>
+                    ${p.caption ? `<div class="post-caption"><b>${p.username || 'user'}</b> ${p.caption}</div>` : ''}
+                    <div class="post-views">${p.views || 0} просмотров</div>
                     <div class="post-comments-link" data-id="${p.id}">Смотреть комментарии (${ca.length})</div>
                 </article>`;
             }).join('');
-            attachFeedHandlers();
+            
+            // Обработчики
+            $$('.like-btn').forEach(b => b.onclick = async () => {
+                const postId = b.dataset.id;
+                if (!currentUser) return toast('Войдите');
+                const post = allPosts.find(p => p.id === postId);
+                if (!post) return;
+                
+                const likes = post.likes || {};
+                const arr = Object.values(likes);
+                
+                if (arr.includes(currentUser.uid)) {
+                    const key = Object.entries(likes).find(([k, v]) => v === currentUser.uid)?.[0];
+                    if (key) await db.ref('posts/' + postId + '/likes/' + key).remove();
+                } else {
+                    const ref = db.ref('posts/' + postId + '/likes').push();
+                    await ref.set(currentUser.uid);
+                }
+                await loadPosts();
+                renderFeed();
+            });
+            
+            $$('.cmt-btn, .post-comments-link').forEach(b => b.onclick = () => {
+                const postId = b.dataset.id;
+                const post = allPosts.find(p => p.id === postId);
+                if (!post) return;
+                
+                const comments = Object.values(post.comments || {}).sort((a, b) => 
+                    new Date(a.createdAt || 0) - new Date(b.createdAt || 0)
+                );
+                
+                openModal(`
+                    <h3>Комментарии</h3>
+                    <div class="cmt-list">${comments.length ? comments.map(c => 
+                        `<div class="cmt-row"><b>${c.username || c.userName}</b><span class="cmt-time">${timeAgo(c.createdAt)}</span><br>${c.text}</div>`
+                    ).join('') : '<div style="color:#666;text-align:center;padding:15px;">Пока нет</div>'}</div>
+                    <div class="cmt-input-row">
+                        <input id="cmtInput" placeholder="Комментарий..." maxlength="200">
+                        <button id="sendCmt">Отпр.</button>
+                    </div>
+                    <button class="btn btn-outline" id="closeCmt" style="margin-top:8px;">Закрыть</button>
+                `);
+                
+                $('#sendCmt').onclick = async () => {
+                    const text = $('#cmtInput')?.value?.trim();
+                    if (!text || !currentUser) return;
+                    
+                    const ref = db.ref('posts/' + postId + '/comments').push();
+                    await ref.set({
+                        userId: currentUser.uid,
+                        username: currentUserData?.username || 'user',
+                        userName: currentUserData?.name || 'User',
+                        text,
+                        createdAt: new Date().toISOString()
+                    });
+                    
+                    closeModal();
+                    await loadPosts();
+                    renderFeed();
+                };
+                
+                $('#closeCmt').onclick = closeModal;
+            });
+            
+            $$('.share-btn').forEach(b => b.onclick = async () => {
+                const post = allPosts.find(p => p.id === b.dataset.id);
+                if (!post || !currentUser) return;
+                
+                const ref = db.ref('posts').push();
+                await ref.set({
+                    userId: currentUser.uid,
+                    username: currentUserData?.username || 'user',
+                    userName: currentUserData?.name || 'User',
+                    imageURL: post.imageURL,
+                    caption: 'Репост от @' + (post.username || 'user') + ': ' + (post.caption || ''),
+                    likes: {},
+                    comments: {},
+                    views: 0,
+                    createdAt: new Date().toISOString()
+                });
+                
+                toast('Репост добавлен!');
+                await loadPosts();
+                renderFeed();
+            });
+            
+            $$('.post-avatar, .post-user').forEach(el => {
+                el.addEventListener('click', () => {
+                    const uid = el.dataset.userId;
+                    if (uid) {
+                        switchTab('tab-profile');
+                        setTimeout(() => updateProfileTab(uid), 100);
+                    }
+                });
+            });
         }
 
-        function attachFeedHandlers(){
-            $$('.like-btn').forEach(b=>b.onclick=async()=>{await toggleLike(b.dataset.id);});
-            $$('.cmt-btn,.post-comments-link').forEach(b=>b.onclick=()=>openCommentsModal(b.dataset.id));
-            $$('.share-btn').forEach(b=>b.onclick=()=>sharePost(b.dataset.id));
-            $$('.post-avatar,.post-user').forEach(el=>el.addEventListener('click',()=>{const uid=el.dataset.userId;if(uid){switchTab('tab-profile');setTimeout(()=>updateProfileTab(uid),100);}}));
-            $$('.post-img').forEach(img=>{let last=0;img.onclick=async function(){const now=Date.now(),id=this.dataset.id;if(now-last<320){const h=document.createElement('div');h.className='heart-anim';h.innerHTML=SVG.heartAnim;h.style.left='50%';h.style.top='50%';this.appendChild(h);setTimeout(()=>h.remove(),1000);const post=allPosts.find(p=>p.id===id);if(post&&!Object.values(post.likes||{}).includes(currentUser?.uid))await toggleLike(id);}last=now;};});
-        }
-
-        async function toggleLike(postId){
-            if(!currentUser)return toast('Войдите');
-            const post=allPosts.find(p=>p.id===postId);if(!post)return;
-            const likes=post.likes||{},arr=Object.values(likes);
-            if(arr.includes(currentUser.uid)){
-                const key=Object.entries(likes).find(([k,v])=>v===currentUser.uid)?.[0];
-                if(key)await db.ref('posts/'+postId+'/likes/'+key).remove();
-            }else{
-                const r=db.ref('posts/'+postId+'/likes').push();await r.set(currentUser.uid);
-                if(post.userId!==currentUser.uid)await addNotification(post.userId,'like',currentUser.uid,currentUserData?.username||'user',postId);
-            }
-            await loadPosts();renderFeed();
-        }
-
-        function openCommentsModal(postId){
-            const post=allPosts.find(p=>p.id===postId);if(!post)return;
-            const comments=Object.values(post.comments||{}).sort((a,b)=>new Date(a.createdAt||0)-new Date(b.createdAt||0));
-            openModal(`<h3>Комментарии</h3><div class="cmt-list">${comments.length?comments.map(c=>`<div class="cmt-row"><b>${c.username||c.userName}</b><span class="cmt-time">${timeAgo(c.createdAt)}</span><br>${c.text}</div>`).join(''):'<div style="color:#666;text-align:center;padding:15px;">Пока нет</div>'}</div><div class="cmt-input-row"><input id="cmtInput" placeholder="Комментарий..." maxlength="200"><button id="sendCmt">Отпр.</button></div><button class="btn btn-outline" id="closeCmt" style="margin-top:8px;">Закрыть</button>`);
-            $('#sendCmt').onclick=async()=>{const text=$('#cmtInput').value.trim();if(!text||!currentUser)return;const r=db.ref('posts/'+postId+'/comments').push();await r.set({userId:currentUser.uid,username:currentUserData?.username||'user',userName:currentUserData?.name||'User',text,createdAt:new Date().toISOString()});if(post.userId!==currentUser.uid)await addNotification(post.userId,'comment',currentUser.uid,currentUserData?.username||'user',postId,text);closeModal();await loadPosts();renderFeed();};
-            $('#closeCmt').onclick=closeModal;
-        }
-
-        async function sharePost(postId){
-            const post=allPosts.find(p=>p.id===postId);if(!post||!currentUser)return;
-            const r=db.ref('posts').push();await r.set({userId:currentUser.uid,username:currentUserData?.username||'user',userName:currentUserData?.name||'User',imageURL:post.imageURL,caption:'Репост от @'+(post.username||post.userName)+': '+(post.caption||''),likes:{},comments:{},views:0,createdAt:new Date().toISOString()});
-            toast('Репост добавлен!');await loadPosts();renderFeed();
-        }
-
-        async function createPost(){
-            if(!currentUser)return toast('Войдите');if(!selectedPhotoFile)return toast('Выберите фото');
-            const btn=$('#btnPublish');btn.disabled=true;
-            try{
-                const imageURL=await fileToDataURL(selectedPhotoFile);
-                const r=db.ref('posts').push();await r.set({userId:currentUser.uid,username:currentUserData?.username||'user',userName:currentUserData?.name||'User',imageURL,caption:$('#inputCaption').value.trim()||'',likes:{},comments:{},views:0,createdAt:new Date().toISOString()});
-                $('#inputCaption').value='';selectedPhotoFile=null;$('#photoUploadArea').innerHTML='<span class="placeholder"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg><br>Выбрать фото</span>';
-                $('#addForm').classList.add('hidden');await loadPosts();renderFeed();updateProfileTab();
-                toast('Опубликовано!');
-            }catch(e){toast('Ошибка');}
-            btn.disabled=false;
-        }
-
-        async function updateProfileTab(userId=null){
-            const tid=userId||currentUser?.uid;if(!tid)return;viewedProfileUserId=tid;
-            const ud=tid===currentUser?.uid?currentUserData:(allUsers[tid]||{});
-            const isMe=tid===currentUser?.uid;
-            const following=isMe?false:await isFollowing(tid);
-            const myPosts=allPosts.filter(p=>p.userId===tid);
-            const fSnap=await db.ref('followers/'+tid).once('value'),fc=fSnap.exists()?Object.keys(fSnap.val()).length:0;
-            const fwSnap=await db.ref('following/'+tid).once('value'),fwc=fwSnap.exists()?Object.keys(fwSnap.val()).length:0;
-            const scroll=$('#profileScroll');
-            scroll.innerHTML=`<div class="profile-header-panel"><div class="profile-avatar" id="profileAvatarBig">${userAvatar(ud)}${isMe?'<div class="overlay">Сменить</div>':''}</div><div class="profile-stats-row"><div class="stat-item"><div class="stat-num">${myPosts.length}</div><div class="stat-lbl">Постов</div></div><div class="stat-item" id="followersStat"><div class="stat-num">${fc}</div><div class="stat-lbl">Подписчиков</div></div><div class="stat-item" id="followingStat"><div class="stat-num">${fwc}</div><div class="stat-lbl">Подписок</div></div></div></div><div class="profile-bio-panel"><div class="display-name">${ud.name||'Пользователь'}</div><div class="username-display">@${ud.username||'username'}</div><div class="bio-text">${ud.bio||''}</div>${isMe?'<button class="profile-btn" id="editProfileBtn">Редактировать</button>':`<button class="profile-btn ${following?'following':''}" id="followBtn">${following?'Подписаны':'Подписаться'}</button>`}</div><div class="profile-grid-posts">${myPosts.length?myPosts.map(p=>`<div class="grid-post" data-id="${p.id}"><img src="${p.imageURL}"></div>`).join(''):'<div style="grid-column:1/-1;text-align:center;color:#666;padding:40px;">Нет постов</div>'}</div>`;
-            if(isMe){
-                $('#profileAvatarBig').onclick=async()=>{
-                    const file=await pickFile();if(!file)return;
-                    const dataURL=await fileToDataURL(file);
-                    await currentUser.updateProfile({photoURL:dataURL});
-                    await db.ref('users/'+currentUser.uid).update({photoURL:dataURL});
-                    currentUserData.photoURL=dataURL;currentUser.photoURL=dataURL;
-                    await loadUsers();updateProfileTab();
+        async function updateProfileTab(userId = null) {
+            const tid = userId || currentUser?.uid;
+            if (!tid) return;
+            
+            const ud = tid === currentUser?.uid ? currentUserData : (allUsers[tid] || {});
+            const isMe = tid === currentUser?.uid;
+            const myPosts = allPosts.filter(p => p.userId === tid);
+            
+            const fSnap = await db.ref('followers/' + tid).once('value');
+            const fc = fSnap.exists() ? Object.keys(fSnap.val()).length : 0;
+            
+            const fwSnap = await db.ref('following/' + tid).once('value');
+            const fwc = fwSnap.exists() ? Object.keys(fwSnap.val()).length : 0;
+            
+            const following = isMe ? false : await (async () => {
+                if (!currentUser) return false;
+                const s = await db.ref('following/' + currentUser.uid + '/' + tid).once('value');
+                return s.exists();
+            })();
+            
+            const scroll = $('#profileScroll');
+            if (!scroll) return;
+            
+            scroll.innerHTML = `
+                <div class="profile-header-panel">
+                    <div class="profile-avatar" id="profileAvatarBig">${userAvatar(ud)}${isMe ? '<div class="overlay">Сменить</div>' : ''}</div>
+                    <div class="profile-stats-row">
+                        <div class="stat-item"><div class="stat-num">${myPosts.length}</div><div class="stat-lbl">Постов</div></div>
+                        <div class="stat-item"><div class="stat-num">${fc}</div><div class="stat-lbl">Подписчиков</div></div>
+                        <div class="stat-item"><div class="stat-num">${fwc}</div><div class="stat-lbl">Подписок</div></div>
+                    </div>
+                </div>
+                <div class="profile-bio-panel">
+                    <div class="display-name">${ud.name || 'Пользователь'}</div>
+                    <div class="username-display">@${ud.username || 'username'}</div>
+                    <div class="bio-text">${ud.bio || ''}</div>
+                    ${isMe ? '<button class="profile-btn" id="editProfileBtn">Редактировать</button>' : 
+                    `<button class="profile-btn ${following ? 'following' : ''}" id="followBtn">${following ? 'Подписаны' : 'Подписаться'}</button>`}
+                </div>
+                <div class="profile-grid-posts">${myPosts.length ? myPosts.map(p => `<div class="grid-post" data-id="${p.id}"><img src="${p.imageURL}"></div>`).join('') : '<div style="grid-column:1/-1;text-align:center;color:#666;padding:40px;">Нет постов</div>'}</div>
+            `;
+            
+            if (isMe) {
+                const avatarBig = $('#profileAvatarBig');
+                if (avatarBig) avatarBig.onclick = async () => {
+                    const file = await pickFile();
+                    if (!file) return;
+                    const dataURL = await fileToDataURL(file);
+                    await currentUser.updateProfile({ photoURL: dataURL });
+                    await db.ref('users/' + currentUser.uid).update({ photoURL: dataURL });
+                    currentUserData.photoURL = dataURL;
+                    currentUser.photoURL = dataURL;
+                    await loadUsers();
+                    updateProfileTab();
                     toast('Аватар обновлён!');
                 };
-                $('#editProfileBtn').onclick=openEditProfile;
-            }else{
-                $('#followBtn').onclick=async()=>{if(following){await unfollowUser(tid);}else{await followUser(tid);}await loadUsers();updateProfileTab(tid);};
-                $('#followersStat').onclick=()=>showFollowersModal(tid);
-                $('#followingStat').onclick=()=>showFollowingModal(tid);
-            }
-            $$('.grid-post').forEach(el=>el.onclick=()=>{switchTab('tab-feed');setTimeout(()=>{const p=document.querySelector(`.post[data-id="${el.dataset.id}"]`);if(p)p.scrollIntoView({behavior:'smooth'});},300);});
-        }
-
-        async function showFollowersModal(uid){const s=await db.ref('followers/'+uid).once('value');const list=s.exists()?Object.keys(s.val()):[];let h='<h3>Подписчики</h3><div class="followers-modal-list">';for(const fid of list){const ud=allUsers[fid]||{};h+=`<div class="follower-row"><div class="flw-avatar">${userAvatar(ud)}</div><div><b>@${ud.username||'user'}</b><br><span style="font-size:11px;color:#888;">${ud.name||''}</span></div></div>`;}h+='</div><button class="btn btn-outline" id="closeFlw" style="margin-top:8px;">Закрыть</button>';if(!list.length)h='<h3>Подписчики</h3><div style="text-align:center;color:#666;padding:20px;">Пока нет</div><button class="btn btn-outline" id="closeFlw" style="margin-top:8px;">Закрыть</button>';openModal(h);$('#closeFlw').onclick=closeModal;}
-        async function showFollowingModal(uid){const s=await db.ref('following/'+uid).once('value');const list=s.exists()?Object.keys(s.val()):[];let h='<h3>Подписки</h3><div class="followers-modal-list">';for(const fid of list){const ud=allUsers[fid]||{};h+=`<div class="follower-row"><div class="flw-avatar">${userAvatar(ud)}</div><div><b>@${ud.username||'user'}</b><br><span style="font-size:11px;color:#888;">${ud.name||''}</span></div></div>`;}h+='</div><button class="btn btn-outline" id="closeFlw" style="margin-top:8px;">Закрыть</button>';if(!list.length)h='<h3>Подписки</h3><div style="text-align:center;color:#666;padding:20px;">Пока нет</div><button class="btn btn-outline" id="closeFlw" style="margin-top:8px;">Закрыть</button>';openModal(h);$('#closeFlw').onclick=closeModal;}
-
-        function openEditProfile(){
-            if(!currentUser)return;
-            openModal(`<h3>Редактировать профиль</h3><input id="editName" placeholder="Имя" value="${currentUserData?.name||''}" maxlength="30"><input id="editBio" placeholder="О себе" value="${currentUserData?.bio||''}" maxlength="150"><button class="btn" id="saveProfile">Сохранить</button><button class="btn btn-outline" id="cancelProfile" style="margin-top:6px;">Отмена</button>`);
-            $('#saveProfile').onclick=async()=>{const name=$('#editName').value.trim(),bio=$('#editBio').value.trim();if(!name)return toast('Имя обязательно');await currentUser.updateProfile({displayName:name});await db.ref('users/'+currentUser.uid).update({name,bio});currentUserData.name=name;currentUserData.bio=bio;closeModal();await loadUsers();updateProfileTab();toast('Сохранено!');};
-            $('#cancelProfile').onclick=closeModal;
-        }
-
-        function setupSearch(){
-            $('#searchInput').addEventListener('input',async function(){
-                const q=this.value.trim().toLowerCase(),res=$('#searchResults');
-                if(!q){res.innerHTML='<div style="color:#666;text-align:center;padding:20px;">Введите юзернейм</div>';return;}
-                const found=Object.entries(allUsers).filter(([uid,data])=>(data.username||'').toLowerCase().includes(q)&&uid!==currentUser?.uid);
-                if(!found.length){res.innerHTML='<div style="color:#666;text-align:center;padding:20px;">Ничего не найдено</div>';return;}
-                res.innerHTML=found.map(([uid,data])=>`<div class="follower-row search-user" data-uid="${uid}" style="cursor:pointer;"><div class="flw-avatar">${userAvatar(data)}</div><div><b>@${data.username||'user'}</b><br><span style="font-size:11px;color:#888;">${data.name||''}</span></div></div>`).join('');
-                $$('.search-user').forEach(el=>el.onclick=()=>{switchTab('tab-profile');setTimeout(()=>updateProfileTab(el.dataset.uid),100);});
-            });
-        }
-
-        function renderNotifications(){
-            const list=$('#notifList');
-            if(!notifications.length){list.innerHTML='<div class="empty-state"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="1.5"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span>Уведомлений пока нет</span></div>';return;}
-            list.innerHTML=notifications.map(n=>{const u=allUsers[n.fromUserId]||{};let t='';switch(n.type){case'follow':t=`<b>@${n.fromName}</b> подписался на вас`;break;case'like':t=`<b>@${n.fromName}</b> лайкнул вашу публикацию`;break;case'comment':t=`<b>@${n.fromName}</b> прокомментировал: "${(n.commentText||'').slice(0,50)}..."`;break;}return `<div class="notif-item" data-post-id="${n.postId||''}" data-type="${n.type}"><div class="notif-icon">${userAvatar(u)}</div><div class="notif-text">${t}</div><div class="notif-time">${timeAgo(n.createdAt)}</div></div>`;}).join('');
-            $$('.notif-item').forEach(el=>el.onclick=function(){if(this.dataset.postId){switchTab('tab-feed');setTimeout(()=>{const p=document.querySelector(`.post[data-id="${this.dataset.postId}"]`);if(p){p.scrollIntoView({behavior:'smooth'});openCommentsModal(this.dataset.postId);}},300);}else if(this.dataset.type==='follow')switchTab('tab-profile');});
-        }
-
-        function switchTab(tabId){
-            $$('.tab').forEach(t=>t.classList.remove('active'));document.getElementById(tabId)?.classList.add('active');
-            $$('.nav-btn').forEach(b=>b.classList.remove('active'));const nb=document.querySelector(`.nav-btn[data-tab="${tabId}"]`);if(nb)nb.classList.add('active');
-            $('#addForm').classList.add('hidden');$('#storyForm').classList.add('hidden');
-            currentTab=tabId;
-            if(tabId==='tab-profile')updateProfileTab();
-            if(tabId==='tab-notifications'){loadNotifications().then(()=>{renderNotifications();markNotificationsRead().then(updateNotifBadge);});}
-        }
-
-        async function init(){
-            setupAuth();
-            $('#storyClose').onclick=()=>$('#storyViewer').classList.remove('open');
-            auth.onAuthStateChanged(async(user)=>{
-                currentUser=user;
-                if(user){
-                    await loadUsers();currentUserData=allUsers[user.uid]||{};
-                    const codeSnap=await db.ref('verificationCodes/'+user.uid).once('value');
-                    if(codeSnap.exists()){
-                        $('#authScreen').classList.remove('hidden');$('#mainContent').classList.add('hidden');
-                        $('#authStep1').style.display='none';$('#authStep2').style.display='block';
-                        $('#codeSentMsg').textContent='Введите код подтверждения';
-                    }else{
-                        $('#authScreen').classList.add('hidden');$('#mainContent').classList.remove('hidden');
-                        await loadPosts();renderFeed();updateProfileTab();await loadNotifications();await loadStories();
+                
+                const editBtn = $('#editProfileBtn');
+                if (editBtn) editBtn.onclick = () => {
+                    if (!currentUser) return;
+                    openModal(`
+                        <h3>Редактировать профиль</h3>
+                        <input id="editName" placeholder="Имя" value="${currentUserData?.name || ''}" maxlength="30">
+                        <input id="editBio" placeholder="О себе" value="${currentUserData?.bio || ''}" maxlength="150">
+                        <button class="btn" id="saveProfile">Сохранить</button>
+                        <button class="btn btn-outline" id="cancelProfile" style="margin-top:6px;">Отмена</button>
+                    `);
+                    
+                    $('#saveProfile').onclick = async () => {
+                        const name = $('#editName')?.value?.trim() || '';
+                        const bio = $('#editBio')?.value?.trim() || '';
+                        if (!name) return toast('Имя обязательно');
+                        await currentUser.updateProfile({ displayName: name });
+                        await db.ref('users/' + currentUser.uid).update({ name, bio });
+                        currentUserData.name = name;
+                        currentUserData.bio = bio;
+                        closeModal();
+                        updateProfileTab();
+                        toast('Сохранено!');
+                    };
+                    
+                    $('#cancelProfile').onclick = closeModal;
+                };
+            } else {
+                const followBtn = $('#followBtn');
+                if (followBtn) followBtn.onclick = async () => {
+                    if (following) {
+                        await db.ref('followers/' + tid + '/' + currentUser.uid).remove();
+                        await db.ref('following/' + currentUser.uid + '/' + tid).remove();
+                    } else {
+                        await db.ref('followers/' + tid + '/' + currentUser.uid).set(true);
+                        await db.ref('following/' + currentUser.uid + '/' + tid).set(true);
                     }
-                }else{
-                    $('#authScreen').classList.remove('hidden');$('#mainContent').classList.add('hidden');
-                    $('#authStep1').style.display='flex';$('#authStep2').style.display='none';
-                }
-                if(!splashHidden)setTimeout(hideSplash,1000);
+                    await loadUsers();
+                    updateProfileTab(tid);
+                    toast(following ? 'Отписались' : 'Подписались');
+                };
+            }
+            
+            $$('.grid-post').forEach(el => el.onclick = () => {
+                switchTab('tab-feed');
+                setTimeout(() => {
+                    const p = document.querySelector(`.post[data-id="${el.dataset.id}"]`);
+                    if (p) p.scrollIntoView({ behavior: 'smooth' });
+                }, 300);
             });
-            $('#btnAddPost').onclick=()=>{if(!currentUser)return toast('Войдите');$('#addForm').classList.toggle('hidden');$('#storyForm').classList.add('hidden');};
-            $('#photoUploadArea').onclick=async()=>{const file=await pickFile();if(!file)return;selectedPhotoFile=file;const url=await fileToDataURL(file);$('#photoUploadArea').innerHTML=`<img src="${url}"><span class="placeholder">Изменить</span>`;};
-            $('#btnPublish').onclick=createPost;
-            $('#storyUploadArea').onclick=async()=>{const file=await pickFile();if(!file)return;selectedStoryFile=file;const url=await fileToDataURL(file);$('#storyUploadArea').innerHTML=`<img src="${url}"><span class="placeholder">Изменить</span>`;};
-            $('#btnPublishStory').onclick=createStory;
-            $('#btnLogout').onclick=async()=>{await auth.signOut();toast('До встречи!');};
-            $('#btnNotifications').onclick=()=>switchTab('tab-notifications');
-            $$('.nav-btn[data-tab]').forEach(b=>b.onclick=function(){switchTab(this.dataset.tab);});
-            document.addEventListener('keydown',e=>{if(e.key==='Escape'){$('#modalOverlay').classList.remove('open');$('#storyViewer').classList.remove('open');}});
-            setupSearch();
         }
+
+        function renderNotifications() {
+            const list = $('#notifList');
+            if (!list) return;
+            
+            if (!notifications.length) {
+                list.innerHTML = '<div class="empty-state"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="1.5"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span>Уведомлений пока нет</span></div>';
+                return;
+            }
+            
+            list.innerHTML = notifications.map(n => {
+                const u = allUsers[n.fromUserId] || {};
+                let t = '';
+                switch (n.type) {
+                    case 'follow': t = `<b>@${n.fromName}</b> подписался на вас`; break;
+                    case 'like': t = `<b>@${n.fromName}</b> лайкнул вашу публикацию`; break;
+                    case 'comment': t = `<b>@${n.fromName}</b> прокомментировал: "${(n.commentText || '').slice(0, 50)}..."`; break;
+                }
+                return `<div class="notif-item" data-post-id="${n.postId || ''}" data-type="${n.type}">
+                    <div class="notif-icon">${userAvatar(u)}</div>
+                    <div class="notif-text">${t}</div>
+                    <div class="notif-time">${timeAgo(n.createdAt)}</div>
+                </div>`;
+            }).join('');
+            
+            $$('.notif-item').forEach(el => el.onclick = function() {
+                if (this.dataset.postId) {
+                    switchTab('tab-feed');
+                    setTimeout(() => {
+                        const p = document.querySelector(`.post[data-id="${this.dataset.postId}"]`);
+                        if (p) p.scrollIntoView({ behavior: 'smooth' });
+                    }, 300);
+                } else if (this.dataset.type === 'follow') {
+                    switchTab('tab-profile');
+                }
+            });
+        }
+
+        // ============ START ============
         init();
+    </script>
+
+    <!-- PWA Service Worker -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/BotScitp/sw.js').catch(() => {});
+        }
     </script>
 </body>
 </html>
